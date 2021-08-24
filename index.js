@@ -1,9 +1,6 @@
-/* 
-	https://stsourlidakis.com/blog/monitor-elements-on-a-webpage-with-nodejs/
-*/
-
 const jsdom = require("jsdom");
 const { JSDOM } = jsdom;
+const notifier = require('node-notifier');
 
 async function getData(url, selector, timeout) {
 	const virtualConsole = new jsdom.VirtualConsole();
@@ -31,8 +28,7 @@ async function getData(url, selector, timeout) {
 }
 
 const url = "https://news.ycombinator.com/news";
-const selector = "#score_28290765";
-// getData(url, selector, 2000).then((result) => console.log(result));
+const selector = ".athing .title>a:first-of-type";
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const checkForMatchingContent = async () => {
@@ -41,12 +37,14 @@ const checkForMatchingContent = async () => {
 	const state2 = await getData(url, selector, 2000);
 
 	if (state1 === state2) {
-		console.log('Original content: ' + state1);
+		// console.log('Original content: ' + state1);
 		return checkForMatchingContent();
 	} else {
-		console.log('Original content: ' + state1);
-		console.log('After content: ' + state2);
-		return console.log("its not a match")
+		notifier.notify({
+			title: 'Page Monitor',
+			message: `Top post on HackerNews changed from ${state1} to ${state2}`
+		})
+		return console.log(`Top post on HackerNews changed from ${state1} to ${state2}`)
 	}
 }
 
