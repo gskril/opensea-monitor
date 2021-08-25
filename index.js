@@ -27,25 +27,31 @@ async function getData(url, selector, timeout) {
 	return data
 }
 
-const url = 'https://news.ycombinator.com/news'
-const selector = '.athing .title>a:first-of-type'
+const openseaProfile = 'logz'
+const url = 'https://opensea.io/' + openseaProfile
+const selector = 'aside[data-testid="ProfilePage--sidebar"] > ul:first-of-type > li:first-of-type > a > div > span'
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
 const checkForMatchingContent = async () => {
-	const state1 = await getData(url, selector, 2000)
+	await delay(5000)
+	try {
+		const state1 = await getData(url, selector, 2000)
+	} catch (error) {
+		console.log('Couldn\'t get state 1')
+	}
 	await delay(5000)
 	const state2 = await getData(url, selector, 2000)
 
 	if (state1 === state2) {
-		console.log('Original content: ' + state1)
+		console.log('Items collected: ' + state1)
 		return checkForMatchingContent()
 	} else {
 		notifier.notify({
-			title: 'Page Monitor',
-			message: `Top post on HackerNews changed from ${state1} to ${state2}`,
+			title: 'OpenSea Monitor',
+			message: `${openseaProfile} bought or sold an NFT. From ${state1} to ${state2}`,
 		})
 		return console.log(
-			`Top post on HackerNews changed from ${state1} to ${state2}`
+			`${openseaProfile} bought or sold an NFT. From ${state1} to ${state2}`
 		)
 	}
 }
