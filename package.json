@@ -7,7 +7,7 @@
     "start": "node index"
   },
   "dependencies": {
-    "jsdom": "^17.0.0",
+    "node-fetch": "^2.6.1",
     "node-notifier": "^10.0.0"
   },
   "devDependencies": {

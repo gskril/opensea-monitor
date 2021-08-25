@@ -10,6 +10,7 @@
 
 ## Flow
 1. User enters username or wallet address
+	- Offer defaults like Logal Paul, FaZe Banks, Gary Vee, etc.
 2. Scrape OpenSea profile for number of collected items
 	```css
 	aside[data-testid="ProfilePage--sidebar"] > ul:first-of-type > li:first-of-type > a > div > span
@@ -19,3 +20,7 @@
 5. Once the variables from step 3 and 4 are not equal, notify user
 	- If var2 > var1, the monitored profile bought an NFT
 	- If v2 < v1, the monitored profile sold an NFT
+
+## Additional NOtes
+- OpenSea does have an API that returns a users assets. It's limited to 50 items, but can be offset to go further
+- OpenSea uses Cloudflare DDOS Protection which stops jsdom from parsing the page (consider setting user agent)
