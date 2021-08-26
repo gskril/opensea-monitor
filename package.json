@@ -1,11 +1,13 @@
 {
   "name": "opensea-monitor",
   "version": "1.0.0",
-  "description": "Monitor OpenSea profiles and notify the user of changes",
+  "description": "Monitor OpenSea profiles to get notified when they send or receive NFT's.",
   "main": "index.js",
   "scripts": {
     "start": "node index"
   },
+  "author": "Greg Skriloff",
+  "lisence": "ISC",
   "dependencies": {
     "axios": "^0.21.1",
     "node-notifier": "^10.0.0"

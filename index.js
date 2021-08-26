@@ -1,12 +1,10 @@
 const axios = require('axios').default
 const notifier = require('node-notifier')
 
-// Customize monitor here
-let profile = '0xff0bd4aa3496739d5667adc10e2b843dfab5712b' // Logan Paul wallet address
+// Configure monitor here
+let wallet = '0xff0bd4aa3496739d5667adc10e2b843dfab5712b'
 let profileName = 'Logan Paul'
-// let profile = '0x179a862703a4adfb29896552df9e307980d19285' // Greg wallet address
-// let profileName = 'Greg'
-let collection = '' // See how many items in a certain collection the above profile owns
+let collection = '' // Handle of collection (optional). I.e. enter 'cryptopunks' to monitor how many CryptoPunks the wallet has
 
 // Leave these untouched
 let offset = 0
@@ -22,7 +20,7 @@ async function fetchApi(stateName) {
 			method: 'GET',
 			url: 'https://api.opensea.io/api/v1/assets',
 			params: {
-				owner: profile,
+				owner: wallet,
 				offset: offset,
 				limit: '50',
 				collection: collection,
@@ -48,6 +46,7 @@ function addAllCalls(stateName, itemsArray) {
 		for (let i = 0; i < itemsArray.length; i++) {
 			state1 += itemsArray[i]
 		}
+		state2 = state1
 	} else if (stateName == 'state2') {
 		for (let i = 0; i < itemsArray.length; i++) {
 			state2 += itemsArray[i]
@@ -60,32 +59,36 @@ function addAllCalls(stateName, itemsArray) {
 async function checkForUpdates(state1, state2) {
 	itemsArray = []
 	offset = 0
-	console.log(
-		`${profileName} has ${state1} NFT's in state1, and ${state2} NFT's in state2`
-	)
+	console.log(`${profileName} had ${state1} NFT's, and now has ${state2}`)
 
 	if (state1 === state2 || state2 === 0) {
 		await delay(60000 * 10) // Wait 10 mins before checking for updates
 		fetchApi('state2')
 	} else {
 		if (state2 > state1) {
-			console.log(`${profileName} has recieved an NFT!`)
+			console.log(`${profileName} recieved an NFT!`)
 			notifier.notify({
 				title: 'OpenSea Monitor',
-				message: `${profileName} has recieved an NFT!`,
+				message: `${profileName} recieved an NFT!`,
 			})
 		} else if (state2 < state1) {
-			console.log(`${profileName} has sent an NFT!`)
+			console.log(`${profileName} sent an NFT!`)
 			notifier.notify({
 				title: 'OpenSea Monitor',
-				message: `${profileName} has sent an NFT!`,
+				message: `${profileName} sent an NFT!`,
 			})
 		} else {
-			console.log(`${profileName} has either bought or sold an NFT!`)
+			console.log(`${profileName} either bought or sold an NFT!`)
 			notifier.notify({
 				title: 'OpenSea Monitor',
-				message: `${profileName} has either bought or sold an NFT!`,
+				message: `${profileName} either bought or sold an NFT!`,
 			})
 		}
+		console.log(
+			`See the changes on OpenSea here: https://opensea.io/${wallet} \n`
+		)
+		// Uncomment the following line to keep the monitor running indefinitely
+		// By default the monitor will stop after detecting a change
+		// fetchApi('state1')
 	}
 }
