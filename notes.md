@@ -1,26 +1,18 @@
 # Notes for OpenSea Web Monitor
 
-## npm Packages:
-- https://www.npmjs.com/package/jsdom
-
-
-## GitHub Repo References
-- https://github.com/antoniomuso/web-monitoring
-- https://github.com/JuanmaMenendez/website-change-monitor
-
 ## Flow
 1. User enters username or wallet address
-	- Offer defaults like Logal Paul, FaZe Banks, Gary Vee, etc.
-2. Scrape OpenSea profile for number of collected items
-	```css
-	aside[data-testid="ProfilePage--sidebar"] > ul:first-of-type > li:first-of-type > a > div > span
-	```
-3. Store value returned in step 2 as variable using jsdom
-4. Repeat step 3 every 5-10 minutes and store as new variable
+	- Offer defaults like Logal Paul, KSI, FaZe Banks, Gary Vee, etc.
+2. Get number of collected items using the [OpenSea assets API](https://docs.opensea.io/reference/getting-assets)
+3. Store value returned in step 2 as `state1` variable
+4. Repeat step 2 every few minutes and store value as `state2` variable
 5. Once the variables from step 3 and 4 are not equal, notify user
-	- If var2 > var1, the monitored profile bought an NFT
-	- If v2 < v1, the monitored profile sold an NFT
+	- If `state2` > `state1`, the monitored profile recieved an NFT
+	- If `state2` < `state1`, the monitored profile sent an NFT
 
-## Additional NOtes
-- OpenSea does have an API that returns a users assets. It's limited to 50 items, but can be offset to go further
-- OpenSea uses Cloudflare DDOS Protection which stops jsdom from parsing the page (consider setting user agent)
+## Additional Notes
+- OpenSea does have an API that returns a users assets. It's limited to 50 items, but can be offset to go further (put it in a loop)
+- NFT's can be hidden on OpenSea profiles. This would throw off scraping, but the API still picks those up
+
+## Ideas
+- Make Twitter bot that tweets when there's activity in celebs' OpenSea accounts. Inspired by [@BigTechAlert](https://twitter.com/bigtechalert)
