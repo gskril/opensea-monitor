@@ -1,10 +1,12 @@
+require('dotenv').config()
 const axios = require('axios').default
-const notifier = require('node-notifier')
+const { Webhook, MessageBuilder } = require('discord-webhook-node')
+const discord = new Webhook(process.env.discordWebook)
 
 // Configure monitor here
-let wallet = '0xff0bd4aa3496739d5667adc10e2b843dfab5712b'
-let profileName = 'Logan Paul'
-let collection = '' // Handle of collection (optional). I.e. enter 'cryptopunks' to monitor how many CryptoPunks the wallet has
+let wallet = process.env.wallet
+let profileName = process.env.profileName
+let collection = process.env.collection // Handle of collection (optional). I.e. enter 'cryptopunks' to monitor how many CryptoPunks the wallet has
 
 // Leave these untouched
 let offset = 0
@@ -65,30 +67,24 @@ async function checkForUpdates(state1, state2) {
 		await delay(60000 * 10) // Wait 10 mins before checking for updates
 		fetchApi('state2')
 	} else {
+		const embed = new MessageBuilder()
+			.setTitle(profileName)
+			.setURL(`https://opensea.io/${wallet}`)
+
 		if (state2 > state1) {
 			console.log(`${profileName} recieved an NFT!`)
-			notifier.notify({
-				title: 'OpenSea Monitor',
-				message: `${profileName} recieved an NFT!`,
-			})
+			embed.setDescription(`Received an NFT!`)
 		} else if (state2 < state1) {
 			console.log(`${profileName} sent an NFT!`)
-			notifier.notify({
-				title: 'OpenSea Monitor',
-				message: `${profileName} sent an NFT!`,
-			})
+			embed.setDescription(`Sent an NFT!`)
 		} else {
 			console.log(`${profileName} either bought or sold an NFT!`)
-			notifier.notify({
-				title: 'OpenSea Monitor',
-				message: `${profileName} either bought or sold an NFT!`,
-			})
+			embed.setDescription(`Sent or received an NFT!`)
 		}
-		console.log(
-			`See the changes on OpenSea here: https://opensea.io/${wallet} \n`
-		)
-		// Uncomment the following line to keep the monitor running indefinitely
-		// By default the monitor will stop after detecting a change
-		// fetchApi('state1')
+		discord.send(embed)
+		console.log(`See the changes on OpenSea here: https://opensea.io/${wallet} \n`)
+
+		// Comment the following line to stop the monitor after detecting a change
+		fetchApi('state1')
 	}
 }
