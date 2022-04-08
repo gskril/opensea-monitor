@@ -1,12 +1,12 @@
 require('dotenv').config()
 const axios = require('axios').default
 const { Webhook, MessageBuilder } = require('discord-webhook-node')
-const discord = new Webhook(process.env.discordWebook)
+const discord = new Webhook(process.env.DISCORD_WEBHOOK_URL)
 
 // Configure monitor here
-let wallet = process.env.wallet
-let profileName = process.env.profileName
-let collection = process.env.collection // Handle of collection (optional). I.e. enter 'cryptopunks' to monitor how many CryptoPunks the wallet has
+let wallet = process.env.WALLET_ADDRESS
+let profileName = process.env.OPENSEA_PROFILE_NAME
+let collection = process.env.OPENSEA_COLLECTION_SLUG // Handle of collection (optional). I.e. enter 'cryptopunks' to monitor how many CryptoPunks the wallet has
 
 // Leave these untouched
 let offset = 0
@@ -27,6 +27,10 @@ async function fetchApi(stateName) {
 				limit: '50',
 				collection: collection,
 			},
+			headers: {
+        Accept: 'application/json',
+        'X-API-KEY': process.env.OPENSEA_API_KEY
+      }
 		})
 		.then(function (response) {
 			let numberOfItemsInCall = Object.keys(response.data.assets).length
@@ -38,6 +42,7 @@ async function fetchApi(stateName) {
 				addAllCalls(stateName, itemsArray)
 			}
 		})
+		.catch((err) => console.error('OpenSea API error:', err.response.statusText))
 }
 
 function addAllCalls(stateName, itemsArray) {
