@@ -39,9 +39,5 @@ Monitor OpenSea profiles and get notified via Discord when they send or receive 
 	- If `state2` < `state1`, the monitored profile sent an NFT
 
 ## Additional Notes
-- The OpenSea assets API is limited to 50 items per call, so if the returned value = 50 we add an offset of 50 and fetch the data again. We then add all the results together.
+- You will need an OpenSea API key to use this script. They are notoriously slow at responding to these requests, but you can [try it here](https://docs.opensea.io/reference/request-an-api-key).
 - NFT's can be hidden on OpenSea profiles, but the API still tracks them. This might make the number you see on OpenSea's website next to "Collected" and the number returned by this monitor different.
-
-## Future Ideas
-- Allow for monitoring multiple OpenSea profiles at once.
-- Make Twitter bot that tweets when there's activity in celebs' OpenSea accounts. Inspired by [@BigTechAlert](https://twitter.com/bigtechalert).
